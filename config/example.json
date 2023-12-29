@@ -7,21 +7,26 @@
   "experimental": {
     "clash_api": {
       "external_controller": "0.0.0.0:9090",
-      "external_ui": "./dashboard",
-      "store_selected": true
+      "external_ui": "yacd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/Yacd-meta/archive/gh-pages.zip",
+      "external_ui_download_detour": "Internet",
+      "secret": "VVIPIPTUNNELS",
+      "default_mode": "rule",
+      "store_selected": true,
+      "cache_file": "clash.db"
     }
   },
   "dns": {
     "servers": [
       {
         "tag": "Internet-dns",
-        "address": "1.0.0.1",
+        "address": "8.8.8.8",
         "strategy": "ipv4_only",
         "detour": "Internet"
       },
       {
         "tag": "Best Latency-dns",
-        "address": "1.1.1.1",
+        "address": "8.8.8.8",
         "strategy": "ipv4_only",
         "detour": "Best Latency"
       },
@@ -51,7 +56,7 @@
       },
       {
         "tag": "direct-dns",
-        "address": "local",
+        "address": "149.112.112.112",
         "strategy": "ipv4_only",
         "detour": "direct"
       },
@@ -67,11 +72,6 @@
           ".arpa"
         ],
         "server": "block-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "domain_suffix": [],
-        "server": "direct-dns",
         "rewrite_ttl": 20
       },
       {
@@ -119,29 +119,25 @@
         "outbound": "direct",
         "server": "direct-dns",
         "rewrite_ttl": 20
-      },
-      {
-        "outbound": "any",
-        "server": "direct-dns",
-        "rewrite_ttl": 20
       }
     ],
     "reverse_mapping": true,
     "strategy": "ipv4_only",
-    "independent_cache": true,
-    "disable_cache": true
+    "independent_cache": true
   },
   "inbounds": [
     {
-      "type": "tproxy",
-      "tag": "tproxy-in",
-      "listen": "::",
-      "listen_port": 9898,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "sniff_timeout": "300ms",
-      "domain_strategy": "prefer_ipv4",
-      "udp_timeout": 300
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "tun0",
+      "inet4_address": "172.19.0.1/30",
+      "inet6_address": "fdfe:dcba:9876::1/126",
+      "mtu": 1358,
+      "auto_route": true,
+      "strict_route": true,
+      "stack": "gvisor",
+      "endpoint_independent_nat": true,
+      "sniff": true
     }
   ],
   "outbounds": [
@@ -149,13 +145,29 @@
       "type": "selector",
       "tag": "Internet",
       "outbounds": [
-        "Best Latency"
+        "Best Latency",
+        "Trojan GFW/TLS",
+        "Trojan WS",
+        "Vmess WS",
+        "Vless WS",
+        "Trojan gRPC",
+        "Vmess gRPC",
+        "Vless gRPC",
+        "Vless Reality"
       ]
     },
     {
       "type": "urltest",
       "tag": "Best Latency",
       "outbounds": [
+        "Trojan GFW/TLS",
+        "Trojan WS",
+        "Vmess WS",
+        "Vless WS",
+        "Trojan gRPC",
+        "Vmess gRPC",
+        "Vless gRPC",
+        "Vless Reality"
       ],
       "url": "https://detectportal.firefox.com/success.txt",
       "interval": "1m0s"
@@ -164,6 +176,14 @@
       "type": "selector",
       "tag": "Lock Region ID",
       "outbounds": [
+        "Trojan GFW/TLS",
+        "Trojan WS",
+        "Vmess WS",
+        "Vless WS",
+        "Trojan gRPC",
+        "Vmess gRPC",
+        "Vless gRPC",
+        "Vless Reality"
       ]
     },
     {
@@ -213,6 +233,245 @@
       ]
     },
     {
+      "domain_strategy": "ipv4_only",
+      "tag": "Trojan GFW/TLS",
+      "type": "trojan",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "password": "PASSWORD",
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Trojan WS",
+      "type": "trojan",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "password": "PASSWORD",
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/buy-trojan-ws-pm-telegram-at-synricha",
+        "headers": {
+          "Host": "TARGETDOMAIN"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Vmess WS",
+      "type": "vmess",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "uuid": "UUID",
+      "security": "auto",
+      "alter_id": 0,
+      "global_padding": false,
+      "authenticated_length": true,
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "packet_encoding": "",
+      "transport": {
+        "type": "ws",
+        "path": "/buy-vmess-ws-pm-telegram-at-synricha",
+        "headers": {
+          "Host": "YOURDOMAINSERVER"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Vless WS",
+
+      "type": "vless",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "uuid": "UUID",
+      "flow": "",
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/buy-vless-ws-pm-telegram-at-synricha",
+        "headers": {
+          "Host": "YOURDOMAINSERVER"
+        }
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Trojan gRPC",
+      "type": "trojan",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "password": "PASSWORD",
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": "buy-trojan-grpc-pm-telegram-at-synricha",
+        "idle_timeout": "15s",
+        "ping_timeout": "15s",
+        "permit_without_stream": false
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Vmess gRPC",
+      "type": "vmess",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "uuid": "UUID",
+      "security": "auto",
+      "alter_id": 0,
+      "global_padding": false,
+      "authenticated_length": true,
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "packet_encoding": "",
+      "transport": {
+        "type": "grpc",
+        "service_name": "buy-vmess-grpc-pm-telegram-at-synricha",
+        "idle_timeout": "15s",
+        "ping_timeout": "15s",
+        "permit_without_stream": false
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Vless gRPC",
+      "type": "vless",
+      "server": "IP/YOURDOMAINSERVER",
+      "server_port": 443,
+      "uuid": "UUID",
+      "flow": "",
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "insecure": true,
+        "utls": {
+          "enabled": false,
+          "fingerprint": "chrome"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "grpc",
+        "service_name": "buy-vless-grpc-pm-telegram-at-synricha",
+        "idle_timeout": "15s",
+        "ping_timeout": "15s",
+        "permit_without_stream": false
+      }
+    },
+    {
+      "domain_strategy": "ipv4_only",
+      "tag": "Vless Reality",
+      "type": "vless",
+      "server": "IP",
+      "server_port": 30000,
+      "uuid": "UUID",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "TARGETDOMAIN",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "PUBLIC_KEY",
+          "short_id": "SHORT_ID"
+        }
+      },
+      "multiplex": {
+        "enabled": false,
+        "protocol": "h2mux",
+        "max_streams": 32
+      },
+      "packet_encoding": "xudp"
+    },
+    {
       "type": "direct",
       "tag": "direct"
     },
@@ -227,6 +486,7 @@
   ],
   "route": {
     "auto_detect_interface": true,
+    "override_android_vpn": true,
     "final": "Internet",
     "geoip": {
       "download_url": "https://github.com/malikshi/sing-box-geo/releases/latest/download/geoip.db",
