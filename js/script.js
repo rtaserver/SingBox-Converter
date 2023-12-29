@@ -464,11 +464,11 @@ async function parseUrl() {
     item.tag = nameProxy[index];
   });
   const urls = {
-    sfa: "https://raw.githubusercontent.com/iyarivky/sing-ribet/main/config/config.json",
-    sfaSimple: "https://raw.githubusercontent.com/iyarivky/sing-ribet/main/config/config-simple.json",
-    bfm: "https://raw.githubusercontent.com/iyarivky/sing-ribet/main/config/config-bfm.json",
-    bfmSimple: "https://raw.githubusercontent.com/iyarivky/sing-ribet/main/config/config-bfm-simple.json",
-    nekobox: "https://raw.githubusercontent.com/iyarivky/sing-ribet/main/config/config-nekobox.json"
+    sfa: "https://raw.githubusercontent.com/rtaserver/SingBox-Converter/main/config/config.json",
+    sfaSimple: "https://raw.githubusercontent.com/rtaserver/SingBox-Converter/main/config/config-simple.json",
+    bfm: "https://raw.githubusercontent.com/rtaserver/SingBox-Converter/main/config/config-bfm.json",
+    bfmSimple: "https://raw.githubusercontent.com/rtaserver/SingBox-Converter/main/config/config-bfm-simple.json",
+    nekobox: "https://raw.githubusercontent.com/rtaserver/SingBox-Converter/main/config/config-nekobox.json"
   };
   const configs = {};
   for (const [key, url2] of Object.entries(urls)) {
